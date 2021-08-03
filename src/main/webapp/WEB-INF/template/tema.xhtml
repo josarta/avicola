@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:head>
+        <!-- Basic Page Info -->
+        <meta charset="utf-8"/>
+        <title>DeskApp - Bootstrap Admin Dashboard HTML Template</title>
+
+        <!-- Site favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="#{request.contextPath}/acces/vendors/images/apple-touch-icon.png"/>
+        <link rel="icon" type="image/png" sizes="32x32" href="#{request.contextPath}/acces/vendors/images/favicon-32x32.png"/>
+        <link rel="icon" type="image/png" sizes="16x16" href="#{request.contextPath}/acces/vendors/images/favicon-16x16.png"/>
+
+        <!-- Mobile Specific Metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+        <!-- Google Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800" rel="stylesheet"/>
+        <!-- CSS -->
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/acces/vendors/styles/core.css"/>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/acces/vendors/styles/icon-font.min.css"/>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/acces/src/plugins/cropperjs/dist/cropper.css"></link>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/acces/src/plugins/datatables/css/dataTables.bootstrap4.min.css"/>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/acces/src/plugins/datatables/css/responsive.bootstrap4.min.css"/>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/acces/vendors/styles/style.css"/>
+
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-119386393-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'UA-119386393-1');
+        </script>
+    </h:head>
+
+    <h:body>
+
+        <div class="pre-loader">
+            <div class="pre-loader-box">
+                <div class="loader-logo">
+                    <img src="#{request.contextPath}/acces/vendors/images/deskapp-logo.svg" alt=""/>
+                </div>
+                <div class='loader-progress' id="progress_div">
+                    <div class='bar' id='bar1'></div>
+                </div>
+                <div class='percent' id='percent1'>0%</div>
+                <div class="loading-text">
+                    Cargando...
+                </div>
+            </div>
+        </div>
+
+        <ui:insert name="header">
+            <ui:include src="header.xhtml"/>
+        </ui:insert>
+
+        <ui:insert name="menuVertical">
+            <ui:include src="menuVertical.xhtml"/>
+        </ui:insert>
+
+        <div class="mobile-menu-overlay"></div>
+
+
+        <div class="main-container">
+            <div class="pd-ltr-20">
+
+                <ui:insert name="areaTrabajo">
+                    <ui:include src="areaTrabajo.xhtml"/>
+                </ui:insert>
+
+                <ui:insert name="footer">
+                    <ui:include src="footer.xhtml"/>
+                </ui:insert>   
+
+            </div>
+        </div>
+
+
+        <script src="#{request.contextPath}/acces/vendors/scripts/core.js"></script>
+        <script src="#{request.contextPath}/acces/vendors/scripts/script.min.js"></script>
+        <script src="#{request.contextPath}/acces/vendors/scripts/process.js"></script>
+        <script src="#{request.contextPath}/acces/vendors/scripts/layout-settings.js"></script>
+        <script src="#{request.contextPath}/acces/src/plugins/apexcharts/apexcharts.min.js"></script>
+        <script src="#{request.contextPath}/acces/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="#{request.contextPath}/acces/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+        <script src="#{request.contextPath}/acces/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
+        <script src="#{request.contextPath}/acces/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
+        <script src="#{request.contextPath}/acces/vendors/scripts/dashboard.js"></script>
+    </h:body>
+
+</html>
