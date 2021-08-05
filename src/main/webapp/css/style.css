@@ -1590,5 +1590,12 @@ transition: all 0.3s ease-in;
  .copyright a:hover {
      color: #ff7e1d ;
 }
+
+.nice-select.Vegetable_fom{
+    display: none;
+}
+
+
+
 /** end footer **/
 /*--------------------------------------------------------------------- ener page css ---------------------------------------------------------------------*/

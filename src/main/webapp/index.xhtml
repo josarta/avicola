@@ -1,7 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:html5="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
     <h:head>
         <!-- basic -->
         <meta charset="utf-8"/>
@@ -27,6 +30,16 @@
         <!-- Tweaks for older IEs-->
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen"/>
+        
+        
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="-1" />
+
+
+
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     </h:head>
     <h:body class="main-layout">
         <div class="loader_bg">
@@ -90,15 +103,15 @@
                                                 <span>Inicio de sesion</span>
                                                 <h1>Avicola Shop.</h1>
                                                 <p>Tienda y admninistracion de una avicola.</p>
-                                                <form class="Vegetable">
-                                                    <input class="Vegetable_fom" placeholder="Correo" type="text" name=" Correo"/>
+                                                <h:form class="Vegetable">
+                                                    <h:inputText value="#{usuarioSession.usuCorreo}" class="Vegetable_fom" html5:placeholder="Correo" />
                                                     <br/>
                                                     <br/>
-                                                    <input class="Vegetable_fom" placeholder="Clave" type="text" name=" Clave"/>
+                                                    <h:inputSecret value="#{usuarioSession.usuClave}" class="Vegetable_fom" />
                                                     <br/>
                                                     <br/>
-                                                    <button class="Search_btn">Enviar</button>
-                                                </form>
+                                                    <h:commandButton action="#{usuarioSession.iniciarSesion()}" class="Search_btn" value="Enviar" />
+                                                </h:form>
 
                                             </div>
                                         </div>
@@ -122,12 +135,12 @@
                                                 <span>Recuperar contraseña</span>
                                                 <h1>Avicola Shop.</h1>
                                                 <p>Tienda y admninistracion de una avicola.</p>
-                                                <form class="Vegetable">
-                                                    <input class="Vegetable_fom" placeholder="Correo" type="text" name=" Correo"/>
+                                                <h:form class="Vegetable">
+                                                    <h:inputText value="#{usuarioSession.usuCorreo}" class="Vegetable_fom" html5:placeholder="Correo" />
                                                     <br/>
                                                     <br/>
-                                                    <button class="Search_btn">Enviar</button>
-                                                </form>
+                                                    <h:commandButton action="#{usuarioSession.recuperarClave()}" class="Search_btn" value="Enviar" />
+                                                </h:form>
 
                                             </div>
                                         </div>
@@ -148,47 +161,54 @@
 
                             <div class="container-fluid padding_dd">
                                 <div class="carousel-caption ">
-                                    <div class="row">
 
-                                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                            <div class="text-bg">
-                                                <span>Registrar</span>
+                                    <h:form> 
+                                        <div class="row">
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                                <div class="text-bg">
+                                                    <span>Registrar</span>
 
-                                                <div class="Vegetable">
-                                                    <br/>
-                                                    <input class="Vegetable_fom" placeholder="Tipo Documento" type="text" name="Tipo Documento"/>
-                                                    <br/>
-                                                    <br/>
-                                                    <input class="Vegetable_fom" placeholder="Documento" type="text" name="Documento"/>
-                                                    <br/>
-                                                    <br/>
-                                                    <input class="Vegetable_fom" placeholder="Nombres" type="text" name="Tipo Documento"/>
-                                                    <br/>
-                                                    <br/>
-                                                    <input class="Vegetable_fom" placeholder="Apellidos" type="text" name="Documento"/>
-                                                    <br/>
-                                                    <br/>
+                                                    <div class="Vegetable">
+                                                        <br/>
+                                                        <h:selectOneMenu value="#{usuarioSession.usuReg.usuTipodocumento}" class="Vegetable_fom" >
+                                                            <f:selectItem itemLabel="Cedula" itemValue="Cedula"></f:selectItem>
+                                                            <f:selectItem itemLabel="Cedula Ex" itemValue="Cedula Ex"></f:selectItem>
+                                                            <f:selectItem itemLabel="T. Identidad" itemValue="T. Identidad"></f:selectItem>
+                                                            <f:selectItem itemLabel="Otros" itemValue="Otros"></f:selectItem>
+                                                        </h:selectOneMenu>   
+                                                        <br/>
+                                                        <br/>
+                                                        <h:inputText value="#{usuarioSession.usuReg.usuNumerodocumento}" class="Vegetable_fom" html5:placeholder="Documento" />
+                                                        <br/>
+                                                        <br/>
+                                                        <h:inputText value="#{usuarioSession.usuReg.usuNombres}" class="Vegetable_fom" html5:placeholder="Nombres" />
+                                                        <br/>
+                                                        <br/>
+                                                        <h:inputText value="#{usuarioSession.usuReg.usuApellidos}" class="Vegetable_fom" html5:placeholder="Apellidos" />
+                                                        <br/>
+                                                        <br/>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                            <div class="text-bg">
-                                                <span>Seguridad</span>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                                <div class="text-bg">
+                                                    <span>Seguridad</span>
 
-                                                <div class="Vegetable">
-                                                    <br/>
-                                                    <input class="Vegetable_fom" placeholder="Correo" type="text" name="Tipo Documento"/>
-                                                    <br/>
-                                                    <br/>
-                                                    <input class="Vegetable_fom" placeholder="Clave" type="text" name="Documento"/>
-                                                    <br/>
-                                                    <br/>
-                                                    <button class="Search_btn">Enviar</button>
+                                                    <div class="Vegetable">
+                                                        <br/>
+                                                        <h:inputText value="#{usuarioSession.usuReg.usuCorreoelectronico}" class="Vegetable_fom" html5:placeholder="Correo Electronico" />
+                                                        <br/>
+                                                        <br/>
+                                                        <h:inputSecret value="#{usuarioSession.usuReg.usuClave}" class="Vegetable_fom" html5:placeholder="Clave" />
+                                                        <br/>
+                                                        <br/>
+                                                        <h:commandButton action="#{usuarioSession.registrarUsuario()}" class="Search_btn" value="Enviar" />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </div> 
                                         </div>
+                                    </h:form>
 
-                                    </div>
                                 </div>
                             </div>
                         </div>
