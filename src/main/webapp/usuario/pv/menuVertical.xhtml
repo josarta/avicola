@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:composition>
+        <div class="left-side-bar">
+            <div class="brand-logo">
+                <a href="index.html">
+                    <img src="#{request.contextPath}/acces/vendors/images/deskapp-logo.svg" alt="" class="dark-logo"/>
+                    <img src="#{request.contextPath}/acces/vendors/images/deskapp-logo-white.svg" alt="" class="light-logo"/>
+                </a>
+                <div class="close-sidebar" data-toggle="left-sidebar-close">
+                    <i class="ion-close-round"></i>
+                </div>
+            </div>
+            <div class="menu-block customscroll">
+                <div class="sidebar-menu">
+                    <ul id="accordion-menu">
+                        <li>
+                            <div class="dropdown-divider"></div>
+                        </li>
+
+                        <c:forEach var="rol" items="#{usuarioSession.usuLogin.rolCollection}">
+
+                            <li class="dropdown">
+                                <a href="../#{rol.rolDescripcion}/index.xhtml" class="dropdown-toggle">
+                                    <span class="micon dw #{rol.rolIcono}"></span><span class="mtext">#{rol.rolNombre}</span>
+                                </a>
+
+                            </li>
+
+                        </c:forEach>
+                        <li>
+                            <div class="dropdown-divider"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </ui:composition>
+</html>
+

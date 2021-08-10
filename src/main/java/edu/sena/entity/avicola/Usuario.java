@@ -57,6 +57,10 @@ public class Usuario implements Serializable {
     private String usuClave;
     @Column(name = "usu_estado")
     private Short usuEstado;
+    @Size(max = 255)
+    @Column(name = "usu_foto")
+    private String usuFoto;
+
     @ManyToMany(mappedBy = "usuarioCollection", fetch = FetchType.LAZY)
     private Collection<Rol> rolCollection;
     @OneToMany(mappedBy = "fkCliente", fetch = FetchType.LAZY)
@@ -167,6 +171,14 @@ public class Usuario implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public String getUsuFoto() {
+        return usuFoto;
+    }
+
+    public void setUsuFoto(String usuFoto) {
+        this.usuFoto = usuFoto;
     }
 
     @Override

@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:html5="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition>
+        <div class="card-box pd-20 height-100-p mb-30">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <img src="#{request.contextPath}/acces/vendors/images/banner-img.png" alt=""/>
+                </div>
+                <div class="col-md-8">
+                    <h4 class="font-20 weight-500 mb-10 text-capitalize">
+                        Bienvenido <div class="weight-600 font-30 text-blue">#{usuarioSession.usuLogin.usuNombres} #{usuarioSession.usuLogin.usuApellidos} !</div>
+                    </h4>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-8 mb-30">
+                <div class="card-box height-100-p pd-20">
+                    <h2 class="h4 mb-20">Mis datos</h2>
+
+                    <h:form>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Tipo Documento</label>
+                            <div class="col-sm-12 col-md-10">
+                                <h:selectManyMenu disabled="true" value="#{usuarioSession.usuLogin.usuTipodocumento}" class="custom-select col-12">
+                                    <f:selectItem itemLabel="Cedula" itemValue="Cedula" ></f:selectItem>  
+                                    <f:selectItem itemLabel="T. Identidad" itemValue="T. Identidad" ></f:selectItem>  
+                                    <f:selectItem itemLabel="Otro" itemValue="Otro" ></f:selectItem>  
+                                </h:selectManyMenu>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Numero Documento</label>
+                            <div class="col-sm-12 col-md-10">
+                                <h:inputText disabled="true" value="#{usuarioSession.usuLogin.usuNumerodocumento}"  class="form-control" html5:placeholder="Numero Documento"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Nombres</label>
+                            <div class="col-sm-12 col-md-10">
+                                <h:inputText value="#{usuarioSession.usuLogin.usuNombres}"  class="form-control" html5:placeholder="Nombres"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Apellidos</label>
+                            <div class="col-sm-12 col-md-10">
+                                <h:inputText value="#{usuarioSession.usuLogin.usuApellidos}"  class="form-control" html5:placeholder="Apellidos"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Correo</label>
+                            <div class="col-sm-12 col-md-10">
+                                <h:inputText value="#{usuarioSession.usuLogin.usuCorreoelectronico}"  class="form-control" html5:placeholder="Correo"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Clave</label>
+                            <div class="col-sm-12 col-md-10">
+                                <h:inputSecret value="#{usuarioSession.usuLogin.usuClave}"  class="form-control" html5:placeholder="Clave"/>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-6 col-md-6">
+                            </div>
+
+                            <div class="col-sm-6 col-md-6">
+
+                                <h:commandButton action="#{usuarioSession.actualizarMisDatos()}" class="btn btn-primary btn-sm" value="Actualizar"></h:commandButton>
+                            </div>
+                        </div>
+
+
+
+                    </h:form>
+
+
+                </div>
+            </div>
+            <div class="col-xl-4 mb-30">
+                <div class="card-box height-100-p pd-20">
+                    <h2 class="h4 mb-20">Mi perfil</h2>
+                    <div class="profile-photo">
+                        <a class="edit-avatar" onclick="$('#miFoto\\:cargaImg').click()" ><i  class="fa fa-pencil"></i></a>
+                        <h:graphicImage class="avatar-photo" id="miFotoPerfil" value="/imagesSv/#{usuarioSession.usuLogin.usuFoto}"/>
+
+                        <h:form enctype="multipart/form-data" id="miFoto">
+                            <h:inputFile style="display: none" value="#{usuarioSession.mifoto}" id="cargaImg"  >
+                                <f:ajax render="miFotoPerfil miFotoPerfilHeader" listener="#{usuarioSession.actualizarMifoto}"/>
+                            </h:inputFile>
+                            <input type="reset" style="display: none" id="formReset" value="borrar"/>
+                        </h:form>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </ui:composition>
+</html>
+

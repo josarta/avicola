@@ -9,9 +9,17 @@
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>ServletImg</servlet-name>
+        <servlet-class>edu.sena.utilidad.avicola.ServletImg</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletImg</servlet-name>
+        <url-pattern>/ServletImg</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -21,8 +29,7 @@
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
-    
-     <data-source>
+    <data-source>
         <name>java:app/dbs_avicola</name>
         <class-name>com.mysql.cj.jdbc.MysqlDataSource</class-name>
         <server-name>localhost</server-name>
@@ -42,5 +49,4 @@
         <max-pool-size>32</max-pool-size>
         <min-pool-size>8</min-pool-size>
     </data-source>
-    
 </web-app>

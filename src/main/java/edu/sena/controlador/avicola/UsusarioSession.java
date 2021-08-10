@@ -8,13 +8,21 @@ package edu.sena.controlador.avicola;
 import edu.sena.entity.avicola.Usuario;
 import edu.sena.facade.avicola.UsuarioFacadeLocal;
 import edu.sena.utilidad.avicola.Mail;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.Part;
 import org.primefaces.PrimeFaces;
+import org.primefaces.shaded.commons.io.FilenameUtils;
 
 /**
  *
@@ -31,6 +39,9 @@ public class UsusarioSession implements Serializable {
     private Usuario usuReg = new Usuario();
     private String usuCorreo = "";
     private String usuClave = "";
+    private Part mifoto;
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
     /**
      * Creates a new instance of UsusarioSession
@@ -109,14 +120,14 @@ public class UsusarioSession implements Serializable {
     public void recuperarClave() {
         usuReg = null;
         usuReg = usuarioFacadeLocal.recuperarClave(usuCorreo);
-        
+
         double aleatorio = 100000 * Math.random();
-        usuReg.setUsuClave("NC-"+(int)aleatorio+"*@");
+        usuReg.setUsuClave("NC-" + (int) aleatorio + "*@");
         usuarioFacadeLocal.edit(usuReg);
-                
+
         if (usuReg != null) {
             try {
-                Mail.recuperarClaves(usuReg.getUsuNombres() + " " +usuReg.getUsuApellidos() , usuCorreo, usuReg.getUsuClave());
+                Mail.recuperarClaves(usuReg.getUsuNombres() + " " + usuReg.getUsuApellidos(), usuCorreo, usuReg.getUsuClave());
                 PrimeFaces.current().executeScript("Swal.fire({"
                         + "  title: 'Correo enviado!',"
                         + "  text: 'Port favor verifique su bandeja de entrada',"
@@ -124,13 +135,13 @@ public class UsusarioSession implements Serializable {
                         + "  confirmButtonText: 'Ok'"
                         + "})");
             } catch (Exception e) {
-                 PrimeFaces.current().executeScript("Swal.fire({"
-                    + "  title: 'Error!',"
-                    + "  text: 'No se puede realizar esta peticion',"
-                    + "  icon: 'error',"
-                    + "  confirmButtonText: 'Por favor intente mas tarde'"
-                    + "})");
-                
+                PrimeFaces.current().executeScript("Swal.fire({"
+                        + "  title: 'Error!',"
+                        + "  text: 'No se puede realizar esta peticion',"
+                        + "  icon: 'error',"
+                        + "  confirmButtonText: 'Por favor intente mas tarde'"
+                        + "})");
+
             }
 
         } else {
@@ -139,6 +150,100 @@ public class UsusarioSession implements Serializable {
                     + "  text: 'Usuario no encontrado',"
                     + "  icon: 'error',"
                     + "  confirmButtonText: 'Valide su correo Electronico'"
+                    + "})");
+        }
+
+    }
+
+    public void actualizarMisDatos() {
+        try {
+            usuarioFacadeLocal.edit(usuLogin);
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Usuario Actualizado !',"
+                    + "  text: 'Con Exito !!!',"
+                    + "  icon: 'success',"
+                    + "  confirmButtonText: 'Ok'"
+                    + "})");
+        } catch (Exception e) {
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Error!',"
+                    + "  text: 'No se puede realizar esta peticion',"
+                    + "  icon: 'error',"
+                    + "  confirmButtonText: 'Por favor intente mas tarde'"
+                    + "})");
+
+        }
+
+    }
+
+    public void actualizarMifoto() {
+        try {
+
+            if (mifoto != null) {
+                if (mifoto.getSize() > 900000) {
+                    PrimeFaces.current().executeScript("Swal.fire({"
+                            + "  title: 'Error!',"
+                            + "  text: 'No se puede cargar este archivo, pór su tamaño',"
+                            + "  icon: 'error',"
+                            + "  confirmButtonText: 'Por favor intente mas tarde'"
+                            + "})");
+                } else if (mifoto.getContentType().equalsIgnoreCase("image/jpeg") || mifoto.getContentType().equalsIgnoreCase("image/png")) {
+
+                    File carpeta = new File("C:/Imgavicola/Fotos/Usuarios");
+                    if (!carpeta.exists()) {
+                        carpeta.mkdirs();
+                    }
+                    try (InputStream is = mifoto.getInputStream()) {
+                        Calendar hoy = Calendar.getInstance();
+                        String renombrar = sdf.format(hoy.getTime()) + ".";
+                        renombrar += FilenameUtils.getExtension(mifoto.getSubmittedFileName());
+                        Files.copy(is, (new File(carpeta, renombrar)).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        usuLogin.setUsuFoto(renombrar);
+                        usuarioFacadeLocal.edit(usuLogin);
+                        PrimeFaces.current().executeScript("Swal.fire({"
+                                + "  title: 'Imagen de perfil Actualizada !',"
+                                + "  text: 'Con Exito !!!',"
+                                + "  icon: 'success',"
+                                + "  confirmButtonText: 'Ok'"
+                                + "})");
+                        PrimeFaces.current().executeScript("document.getElementById('formReset').click()");
+
+                    } catch (Exception e) {
+                        PrimeFaces.current().executeScript("Swal.fire({"
+                                + "  title: 'Error!',"
+                                + "  text: 'No se puede realizar esta peticion',"
+                                + "  icon: 'error',"
+                                + "  confirmButtonText: 'Por favor intente mas tarde'"
+                                + "})");
+
+                    }
+
+                } else {
+                    PrimeFaces.current().executeScript("Swal.fire({"
+                            + "  title: 'Error!',"
+                            + "  text: 'Tipo de archivo no permitido, recuerde la extencion es "
+                            + ".jpeg o .png',"
+                            + "  icon: 'error',"
+                            + "  confirmButtonText: 'Por favor intente mas tarde'"
+                            + "})");
+                }
+
+            } else {
+                PrimeFaces.current().executeScript("Swal.fire({"
+                        + "  title: 'Error!',"
+                        + "  text: 'No se puede realizar esta peticion',"
+                        + "  icon: 'error',"
+                        + "  confirmButtonText: 'Por favor intente mas tarde'"
+                        + "})");
+
+            }
+
+        } catch (Exception e) {
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Error!',"
+                    + "  text: 'No se puede realizar esta peticion',"
+                    + "  icon: 'error',"
+                    + "  confirmButtonText: 'Por favor intente mas tarde'"
                     + "})");
         }
 
@@ -174,6 +279,14 @@ public class UsusarioSession implements Serializable {
 
     public void setUsuClave(String usuClave) {
         this.usuClave = usuClave;
+    }
+
+    public Part getMifoto() {
+        return mifoto;
+    }
+
+    public void setMifoto(Part mifoto) {
+        this.mifoto = mifoto;
     }
 
 }
