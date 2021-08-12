@@ -5,7 +5,9 @@
  */
 package edu.sena.controlador.avicola;
 
+import edu.sena.entity.avicola.Rol;
 import edu.sena.entity.avicola.Usuario;
+import edu.sena.facade.avicola.RolFacadeLocal;
 import edu.sena.facade.avicola.UsuarioFacadeLocal;
 import edu.sena.utilidad.avicola.Mail;
 import java.io.File;
@@ -17,7 +19,11 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
@@ -34,12 +40,16 @@ public class UsusarioSession implements Serializable {
 
     @EJB
     UsuarioFacadeLocal usuarioFacadeLocal;
-
+    @EJB
+    RolFacadeLocal rolFacadeLocal;
     private Usuario usuLogin = new Usuario();
     private Usuario usuReg = new Usuario();
+    private Usuario usuTemporal = new Usuario();
     private String usuCorreo = "";
     private String usuClave = "";
     private Part mifoto;
+    private List<Rol> todosLosRoles = new ArrayList<>();
+    private List<Rol> rolesSinAsignar = new ArrayList<>();
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
@@ -47,6 +57,11 @@ public class UsusarioSession implements Serializable {
      * Creates a new instance of UsusarioSession
      */
     public UsusarioSession() {
+    }
+
+    @PostConstruct
+    public void cargaInicial() {
+        todosLosRoles.addAll(rolFacadeLocal.findAll());
     }
 
     public void iniciarSesion() {
@@ -175,6 +190,27 @@ public class UsusarioSession implements Serializable {
         }
 
     }
+    
+     public void actualizarDatosTemporal() {
+        try {
+            usuarioFacadeLocal.edit(usuTemporal);
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Usuario Actualizado !',"
+                    + "  text: 'Con Exito !!!',"
+                    + "  icon: 'success',"
+                    + "  confirmButtonText: 'Ok'"
+                    + "})");
+        } catch (Exception e) {
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Error!',"
+                    + "  text: 'No se puede realizar esta peticion',"
+                    + "  icon: 'error',"
+                    + "  confirmButtonText: 'Por favor intente mas tarde'"
+                    + "})");
+
+        }
+
+    }
 
     public void actualizarMifoto() {
         try {
@@ -249,6 +285,63 @@ public class UsusarioSession implements Serializable {
 
     }
 
+    public void actualizaRoles() {
+        rolesSinAsignar.clear();
+        for (Rol rolPrincial : todosLosRoles) {
+            boolean flag = true;
+            for (Rol rolUsu : this.usuTemporal.getRolCollection()) {
+                if (Objects.equals(rolPrincial.getRolRolid(), rolUsu.getRolRolid())) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                rolesSinAsignar.add(rolPrincial);
+            }
+        }
+    }
+
+    public void cargaTemporal(Usuario usuIn) {
+        this.usuTemporal = usuIn;
+        actualizaRoles();
+
+    }
+
+    public void removerRol(int rolid) {
+        try {
+            rolFacadeLocal.removerRol(this.usuTemporal.getUsuUsuarioid(), rolid);
+            this.usuTemporal = usuarioFacadeLocal.buscarUsuarioId(this.usuTemporal.getUsuUsuarioid());
+            actualizaRoles();
+        } catch (Exception e) {
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Error!',"
+                    + "  text: 'No se puede realizar esta peticion',"
+                    + "  icon: 'error',"
+                    + "  confirmButtonText: 'Por favor intente mas tarde'"
+                    + "})");
+        }
+    }
+
+    public void addRol(int rolid) {
+        try {
+            rolFacadeLocal.addRol(this.usuTemporal.getUsuUsuarioid(), rolid);
+            this.usuTemporal = usuarioFacadeLocal.buscarUsuarioId(this.usuTemporal.getUsuUsuarioid());
+            actualizaRoles();
+        } catch (Exception e) {
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Error!',"
+                    + "  text: 'No se puede realizar esta peticion',"
+                    + "  icon: 'error',"
+                    + "  confirmButtonText: 'Por favor intente mas tarde'"
+                    + "})");
+        }
+
+    }
+
+    public List<Usuario> todosUsuarios() {
+        return usuarioFacadeLocal.todosUsuarios();
+    }
+
     public Usuario getUsuLogin() {
         return usuLogin;
     }
@@ -287,6 +380,30 @@ public class UsusarioSession implements Serializable {
 
     public void setMifoto(Part mifoto) {
         this.mifoto = mifoto;
+    }
+
+    public Usuario getUsuTemporal() {
+        return usuTemporal;
+    }
+
+    public void setUsuTemporal(Usuario usuTemporal) {
+        this.usuTemporal = usuTemporal;
+    }
+
+    public List<Rol> getTodosLosRoles() {
+        return todosLosRoles;
+    }
+
+    public void setTodosLosRoles(List<Rol> todosLosRoles) {
+        this.todosLosRoles = todosLosRoles;
+    }
+
+    public List<Rol> getRolesSinAsignar() {
+        return rolesSinAsignar;
+    }
+
+    public void setRolesSinAsignar(List<Rol> rolesSinAsignar) {
+        this.rolesSinAsignar = rolesSinAsignar;
     }
 
 }

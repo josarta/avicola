@@ -19,6 +19,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -52,6 +53,8 @@ public class Rol implements Serializable {
         @JoinColumn(name = "fk_usuarioid", referencedColumnName = "usu_usuarioid")})
     @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Usuario> usuarioCollection;
+    @OneToMany(mappedBy = "fkRolid", fetch = FetchType.LAZY)
+    private Collection<Vista> vistaCollection;
 
     public Rol() {
     }
@@ -83,7 +86,7 @@ public class Rol implements Serializable {
     public void setRolDescripcion(String rolDescripcion) {
         this.rolDescripcion = rolDescripcion;
     }
-    
+
     public String getRolIcono() {
         return rolIcono;
     }
@@ -91,7 +94,6 @@ public class Rol implements Serializable {
     public void setRolIcono(String rolIcono) {
         this.rolIcono = rolIcono;
     }
-    
 
     public Collection<Usuario> getUsuarioCollection() {
         return usuarioCollection;
@@ -99,6 +101,14 @@ public class Rol implements Serializable {
 
     public void setUsuarioCollection(Collection<Usuario> usuarioCollection) {
         this.usuarioCollection = usuarioCollection;
+    }
+
+    public Collection<Vista> getVistaCollection() {
+        return vistaCollection;
+    }
+
+    public void setVistaCollection(Collection<Vista> vistaCollection) {
+        this.vistaCollection = vistaCollection;
     }
 
     @Override

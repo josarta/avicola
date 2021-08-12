@@ -29,5 +29,9 @@ public interface RolFacadeLocal {
     List<Rol> findRange(int[] range);
 
     int count();
+
+    public boolean removerRol(int usuarioid, int rolid);
+
+    public boolean addRol(int usuarioid, int rolid);
     
 }

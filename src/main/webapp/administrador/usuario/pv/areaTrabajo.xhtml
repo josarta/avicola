@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:html5="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:composition>
+
+
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="title">
+                        <h4>Administrador</h4>
+                    </div>
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                            <li class="breadcrumb-item active"><a href="#">Gestion de usuarios</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-box mb-30">
+            <h2 class="h4 pd-20">Usuarios</h2>
+            <table class="table nowrap">
+                <thead>
+                    <tr>
+                        <th class="table-plus datatable-nosort">Foto</th>
+                        <th>Documeto</th>
+                        <th>Nombres</th>
+                        <th>Correo</th>
+                        <th>Estado</th>
+                        <th>Perfiles</th>
+                        <th class="datatable-nosort">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <h:form>
+                        <c:forEach items="#{usuarioSession.todosUsuarios()}" var="usu">
+                            <tr>
+                                <td class="table-plus">
+                                    <h:graphicImage width="70" height="70" value="/imagesSv/#{usu.usuFoto}"/>
+                                </td>
+                                <td>
+                                    <h5 class="font-16">#{usu.usuTipodocumento}</h5>
+                                    #{usu.usuNumerodocumento}
+                                </td>
+                                <td>#{usu.usuNombres} #{usu.usuApellidos}</td>
+                                <td>#{usu.usuCorreoelectronico}</td>
+                                <td>
+                                    <i class="icon-copy fa fa-#{usu.usuEstado eq '1'? 'user' :'user-times'}" aria-hidden="true"></i>
+                                </td>
+                                <td>
+                                    <h:commandButton  action="#{usuarioSession.cargaTemporal(usu)}" html5:data-toggle="modal" html5:data-target="#Medium-modal" class="btn btn-outline-primary" value="P">
+                                        <f:ajax render=":datosmodal"></f:ajax>   
+                                    </h:commandButton>
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                            <i class="dw dw-more"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+                                            <h:commandLink  action="#{usuarioSession.cargaTemporal(usu)}" html5:data-toggle="modal" html5:data-target="#Medium-modal-update" class="dropdown-item">
+                                                <i class="dw dw-edit2"></i> Editar
+                                                <f:ajax  render="datosupdate"></f:ajax>   
+                                            </h:commandLink>
+                                            <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Inactivar/Activar</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </c:forEach>
+
+
+                    </h:form>
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <div class="modal fade" id="Medium-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <h:form id="datosmodal">   
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myLargeModalLabel">G-Perfiles / #{usuarioSession.usuTemporal.usuNombres}  #{usuarioSession.usuTemporal.usuApellidos}</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr class="table-active">
+                                                <td>Asignados</td>
+                                                <c:forEach var="rol" items="#{usuarioSession.usuTemporal.rolCollection}">
+                                                    <tr class="table-success">
+                                                        <td>
+                                                            <h:commandLink action="#{usuarioSession.removerRol(rol.rolRolid)}">
+                                                                <span class="micon dw #{rol.rolIcono}"></span> <span class="mtext">#{rol.rolNombre}</span>
+                                                                <f:ajax render=":datosmodal"></f:ajax>    
+                                                            </h:commandLink>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr class="table-active">
+                                                <td>Sin/Asignar</td>
+                                                <c:forEach var="rolSn" items="#{usuarioSession.rolesSinAsignar}">
+                                                    <tr class="table-primary">
+                                                        <td>
+                                                            <h:commandLink action="#{usuarioSession.addRol(rolSn.rolRolid)}">
+                                                                <span class="micon dw #{rolSn.rolIcono}"></span> <span class="mtext">#{rolSn.rolNombre}</span>
+                                                                <f:ajax  render=":datosmodal"></f:ajax>   
+                                                            </h:commandLink>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="Medium-modal-update" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <h:form id="datosupdate">   
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myLargeModalLabelData">#{usuarioSession.usuTemporal.usuNombres}  #{usuarioSession.usuTemporal.usuApellidos}</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Tipo Documento</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:selectManyMenu  value="#{usuarioSession.usuTemporal.usuTipodocumento}" class="custom-select col-12">
+                                        <f:selectItem itemLabel="Cedula" itemValue="Cedula" ></f:selectItem>  
+                                        <f:selectItem itemLabel="T. Identidad" itemValue="T. Identidad" ></f:selectItem>  
+                                        <f:selectItem itemLabel="Otro" itemValue="Otro" ></f:selectItem>  
+                                    </h:selectManyMenu>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Numero Documento</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputText  value="#{usuarioSession.usuTemporal.usuNumerodocumento}"  class="form-control" html5:placeholder="Numero Documento"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Nombres</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputText value="#{usuarioSession.usuTemporal.usuNombres}"  class="form-control" html5:placeholder="Nombres"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Apellidos</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputText value="#{usuarioSession.usuTemporal.usuApellidos}"  class="form-control" html5:placeholder="Apellidos"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Correo</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputText value="#{usuarioSession.usuTemporal.usuCorreoelectronico}"  class="form-control" html5:placeholder="Correo"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Clave</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputSecret value="#{usuarioSession.usuTemporal.usuClave}"  class="form-control" html5:placeholder="Clave"/>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <h:commandButton action="#{usuarioSession.actualizarDatosTemporal()}" class="btn btn-primary" value="Actualizar"></h:commandButton>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+
+
+    </ui:composition>
+</html>
+

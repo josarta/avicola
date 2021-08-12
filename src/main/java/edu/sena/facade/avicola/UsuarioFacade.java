@@ -6,6 +6,7 @@
 package edu.sena.facade.avicola;
 
 import edu.sena.entity.avicola.Usuario;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,6 +34,7 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
     @Override
     public Usuario usuarioLogin(String usuCorreo, String usuClave) {
         try {
+            em.getEntityManagerFactory().getCache().evictAll();
             Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.usuClave = :usuClave AND u.usuCorreoelectronico = :usuCorreo");
             q.setParameter("usuClave", usuClave);
             q.setParameter("usuCorreo", usuCorreo);
@@ -42,10 +44,8 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
             return null;
         }
     }
-    
-    
-    
-      @Override
+
+    @Override
     public boolean registroUsusario(Usuario usuReg) {
         try {
             Query q = em.createNativeQuery("INSERT INTO tbl_usuario (usu_tipodocumento, usu_numerodocumento, usu_nombres, usu_apellidos, usu_correoelectronico, usu_clave, usu_estado) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -62,12 +62,35 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
             return false;
         }
     }
-    
+
     @Override
-    public  Usuario recuperarClave(String usuCorreo) {
+    public Usuario recuperarClave(String usuCorreo) {
         try {
             Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.usuCorreoelectronico = :usuCorreo");
             q.setParameter("usuCorreo", usuCorreo);
+            return (Usuario) q.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Usuario> todosUsuarios() {
+        try {
+            em.getEntityManagerFactory().getCache().evictAll();
+            Query q = em.createQuery("SELECT u FROM Usuario u");
+            return q.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Usuario buscarUsuarioId(int usuarioId) {
+        try {
+            em.getEntityManagerFactory().getCache().evictAll();
+            Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.usuUsuarioid = :usuarioId");
+            q.setParameter("usuarioId", usuarioId);
             return (Usuario) q.getSingleResult();
         } catch (Exception e) {
             return null;

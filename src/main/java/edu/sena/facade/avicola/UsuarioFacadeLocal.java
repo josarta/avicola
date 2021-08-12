@@ -35,5 +35,9 @@ public interface UsuarioFacadeLocal {
     public boolean registroUsusario(Usuario usuReg);
 
     public Usuario recuperarClave(String usuCorreo);
+
+    public List<Usuario> todosUsuarios();
+
+    public Usuario buscarUsuarioId(int usuarioId);
     
 }
