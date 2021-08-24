@@ -29,5 +29,15 @@ public interface CubetaFacadeLocal {
     List<Cubeta> findRange(int[] range);
 
     int count();
+
+    public Cubeta buscarCubetaId(int cubetaId);
+
+    public List<Cubeta> todasCubetas();
+
+    public boolean registroCubeta(Cubeta cubetaIn);
+
+    public boolean cargaFotoCubeta(int fotoIn, int cubetaIn);
+
+    public boolean removerFotoCubeta(int fotoIn, int cubetaIn);
     
 }

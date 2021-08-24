@@ -29,7 +29,7 @@
                                 <ul class="submenu">
                                     <c:forEach var="vista" items="#{rol.vistaCollection}">
                                         <c:if test="#{vista.visEstado eq '1'}">
-                                              <li><a href="#{vista.visRuta}">#{vista.visNombres}</a></li>
+                                              <li><a href="#{vista.visRuta.replaceAll('/administrador','')}">#{vista.visNombres}</a></li>
                                         </c:if>
                                     </c:forEach>
                                 </ul>

@@ -190,8 +190,8 @@ public class UsusarioSession implements Serializable {
         }
 
     }
-    
-     public void actualizarDatosTemporal() {
+
+    public void actualizarDatosTemporal() {
         try {
             usuarioFacadeLocal.edit(usuTemporal);
             PrimeFaces.current().executeScript("Swal.fire({"
@@ -336,6 +336,25 @@ public class UsusarioSession implements Serializable {
                     + "})");
         }
 
+    }
+
+    public void cambiarEstado(Usuario usuIn) {
+        try {
+            if (usuIn.getUsuEstado().equals(Short.parseShort("1"))) {
+                usuIn.setUsuEstado(Short.parseShort("0"));
+            } else {
+                usuIn.setUsuEstado(Short.parseShort("1"));
+            }
+            usuarioFacadeLocal.edit(usuIn);
+
+        } catch (Exception e) {
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Error!',"
+                    + "  text: 'No se puede realizar esta peticion',"
+                    + "  icon: 'error',"
+                    + "  confirmButtonText: 'Por favor intente mas tarde'"
+                    + "})");
+        }
     }
 
     public List<Usuario> todosUsuarios() {

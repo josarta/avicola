@@ -28,6 +28,7 @@
 
         <div class="card-box mb-30">
             <h2 class="h4 pd-20">Usuarios</h2>
+          
             <table class="table nowrap">
                 <thead>
                     <tr>
@@ -38,6 +39,7 @@
                         <th>Estado</th>
                         <th>Perfiles</th>
                         <th class="datatable-nosort">Acciones</th>
+                        <th>  <button data-toggle="modal" data-target="#Medium-modal-create" class="btn btn-danger"> Crear </button></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,12 +68,17 @@
                                         <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
                                             <i class="dw dw-more"></i>
                                         </a>
-                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                            <h:commandLink  action="#{usuarioSession.cargaTemporal(usu)}" html5:data-toggle="modal" html5:data-target="#Medium-modal-update" class="dropdown-item">
-                                                <i class="dw dw-edit2"></i> Editar
-                                                <f:ajax  render="datosupdate"></f:ajax>   
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">+
+                                            
+                                            
+                                            <h:commandButton  value="editar" action="#{usuarioSession.cargaTemporal(usu)}" html5:data-toggle="modal" html5:data-target="#Medium-modal-update" class="dropdown-item">
+                                             
+                                                <f:ajax  render=":datosupdate"></f:ajax>   
+                                            </h:commandButton>
+                                            <h:commandLink action="#{usuarioSession.cambiarEstado(usu)}" class="dropdown-item">
+                                                <i class="dw dw-delete-3"></i> Inactivar/Activar
                                             </h:commandLink>
-                                            <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Inactivar/Activar</a>
+                                          
                                         </div>
                                     </div>
                                 </td>
@@ -165,11 +172,11 @@
                             <div class="form-group row">
                                 <label class="col-sm-12 col-md-2 col-form-label">Tipo Documento</label>
                                 <div class="col-sm-12 col-md-10">
-                                    <h:selectManyMenu  value="#{usuarioSession.usuTemporal.usuTipodocumento}" class="custom-select col-12">
+                                    <h:selectOneMenu  value="#{usuarioSession.usuTemporal.usuTipodocumento}" class="custom-select col-12">
                                         <f:selectItem itemLabel="Cedula" itemValue="Cedula" ></f:selectItem>  
                                         <f:selectItem itemLabel="T. Identidad" itemValue="T. Identidad" ></f:selectItem>  
                                         <f:selectItem itemLabel="Otro" itemValue="Otro" ></f:selectItem>  
-                                    </h:selectManyMenu>
+                                    </h:selectOneMenu>      
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -209,6 +216,75 @@
                         </div>
                         <div class="modal-footer">
                             <h:commandButton action="#{usuarioSession.actualizarDatosTemporal()}" class="btn btn-primary" value="Actualizar"></h:commandButton>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+
+        
+        <div class="modal fade" id="Medium-modal-create" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <h:form>   
+                        <div class="modal-header">
+                            <h4 class="modal-title" >Usuario Nuevo</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Tipo Documento</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:selectOneMenu  value="#{usuarioSession.usuReg.usuTipodocumento}" class="custom-select col-12">
+                                        <f:selectItem itemLabel="Cedula" itemValue="Cedula" ></f:selectItem>  
+                                        <f:selectItem itemLabel="T. Identidad" itemValue="T. Identidad" ></f:selectItem>  
+                                        <f:selectItem itemLabel="Otro" itemValue="Otro" ></f:selectItem>  
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Numero Documento</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputText  value="#{usuarioSession.usuReg.usuNumerodocumento}"  class="form-control" html5:placeholder="Numero Documento"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Nombres</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputText value="#{usuarioSession.usuReg.usuNombres}"  class="form-control" html5:placeholder="Nombres"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Apellidos</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputText value="#{usuarioSession.usuReg.usuApellidos}"  class="form-control" html5:placeholder="Apellidos"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Correo</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputText value="#{usuarioSession.usuReg.usuCorreoelectronico}"  class="form-control" html5:placeholder="Correo"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-2 col-form-label">Clave</label>
+                                <div class="col-sm-12 col-md-10">
+                                    <h:inputSecret value="#{usuarioSession.usuReg.usuClave}"  class="form-control" html5:placeholder="Clave"/>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <h:commandButton action="#{usuarioSession.registrarUsuario()}" class="btn btn-primary" value="Crear"></h:commandButton>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         </div>
                     </h:form>

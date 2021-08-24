@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:html5="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <h:head>
         <!-- basic -->
@@ -30,8 +31,8 @@
         <!-- Tweaks for older IEs-->
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen"/>
-        
-        
+
+
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="-1" />
@@ -69,7 +70,7 @@
                                         <nav class="main-menu ">
                                             <ul class="menu-area-main">
                                                 <li class="active"> <a href="index.html">Home</a> </li>
-                                                <li> <a href="#about">About</a> </li>
+                                                <li> <a href="#about">Productos</a> </li>
                                                 <li> <a href="#vegetable">Vegetable</a> </li>
                                                 <li> <a href="#testimonial">Testomonial</a> </li>
                                                 <li> <a href="#"><img src="#{request.contextPath}/icon/icon_b.png" alt="#" /></a></li>
@@ -235,16 +236,82 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                        <div class="about-box">
-                            <h2>About us</h2>
-                            <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages andIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many</p>
-                            <a href="Javascript:void(0)">Read more</a>
-                        </div>
+                        <h:form>
+                            <c:forEach items="#{cubetasView.leerTodasTemporal()}" var="ctb">
+
+                            
+                            <div class="about-box">
+                                <h:commandButton class="submit" action="#{cubetasView.cargaTemporal(ctb)}" value="#{ctb.cubTipo}">
+                                    <f:ajax render="carrusel"></f:ajax>
+                                </h:commandButton>
+                            </div>
+
+
+                        </c:forEach>
+                            
+                        </h:form>
+                        
+
+
                     </div>
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 padding_rl">
-                        <div class="about-box_img">
-                            <figure><img src="#{request.contextPath}/images/about.jpg" alt="#" /></figure>
+
+                        <div class="clients_red">
+                            <div class="container">
+                                <div id="testimonial_slider" class="carousel slide" data-ride="carousel">
+                                    <h:panelGroup id="carrusel">
+                                    <!-- Indicators -->
+                                    <ul class="carousel-indicators">
+                                        <c:forEach items="#{cubetasView.cub_temporal.fotoCollection}" var="fto" varStatus="pos">
+                                            <li data-target="#testimonial_slider" data-slide-to="#{pos.index}" class="#{pos.index == 0 ?'active':''}"></li>
+                                        </c:forEach>
+
+                                    </ul>
+                                    <!-- The slideshow -->
+                                    <div class="carousel-inner">
+
+                                        <c:forEach items="#{cubetasView.cub_temporal.fotoCollection}" var="fto" varStatus="pos">
+                                            
+                                             <div class="carousel-item #{pos.index == 0 ?'active':''}">
+                                            <div class="testomonial_section">
+
+                                                <div class="full testimonial_cont">
+                                                    <div class="row">
+                                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 pa_right">
+                                                            <div class="testomonial_img">
+                                                                <figure>
+                                                                      <h:graphicImage   value="/imagesCbt/#{fto.fotRuta}" />
+                                                                </figure>
+                                                                <i><img src="#{request.contextPath}/images/test_con.png" alt="#"/></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 pa_left">
+                                                            <div class="cross_inner">
+                                                                <h3>#{cubetasView.cub_temporal.cubTipo}<br/><strong class="ornage_color"> $ - #{cubetasView.cub_temporal.cubValor}</strong></h3>
+                                                                <p>
+                                                                    #{cubetasView.cub_temporal.cubDescripcion}
+                                                                </p>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+>
+                                        </c:forEach>
+                                        
+
+                                    
+
+                                    </div>
+                                    </h:panelGroup>
+
+                                </div>
+                            </div>
                         </div>
+
+
                     </div>
                 </div>
 
