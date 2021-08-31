@@ -29,5 +29,13 @@ public interface GalponFacadeLocal {
     List<Galpon> findRange(int[] range);
 
     int count();
+
+    public boolean registroGalpon(Galpon galponIn);
+
+    public List<Galpon> todosGalpones();
+
+    public Galpon buscarGalponId(int galponId);
+
+    public Galpon validarExistencia(String ubicacion);
     
 }

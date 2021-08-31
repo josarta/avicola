@@ -39,5 +39,7 @@ public interface UsuarioFacadeLocal {
     public List<Usuario> todosUsuarios();
 
     public Usuario buscarUsuarioId(int usuarioId);
-    
+
+    public Usuario validarExistencia(String correoIn);
+
 }

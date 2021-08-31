@@ -97,5 +97,22 @@ public class CubetaFacade extends AbstractFacade<Cubeta> implements CubetaFacade
             return null;
         }
     }
+    
+    
+    @Override
+    public Cubeta validarExistencia(String tipo) {
+        try {
+            Query q = em.createQuery("SELECT c FROM Cubeta c WHERE c.cubTipo LIKE CONCAT('%',:tipo,'%')");
+            q.setParameter("tipo", tipo);
+            List<Cubeta> listaG = q.getResultList();
+            if (listaG.isEmpty()) {
+                return null;
+            } else {
+                return listaG.get(0);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }

@@ -29,78 +29,93 @@
         <div class="card-box mb-30">
             <h2 class="h4 pd-20">Cubetas</h2>
 
-            <table class="table nowrap">
-                <thead>
-                    <tr>
-                        <th class="table-plus datatable-nosort">Foto</th>
-                        <th>Tipo</th>
-                        <th>Descripcion</th>
-                        <th>Valor</th>
-                        <th>Cantidad</th>
-                        <th class="datatable-nosort">Acciones</th>
-                        <th>  <button data-toggle="modal" data-target="#Medium-modal-create" class="btn btn-danger"> Crear </button></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <h:form id="tablaDatos">
-                        <c:forEach items="#{cubetasView.leerTodas()}" var="cbt">
-                            <tr>
-                                <td class="table-plus">
+            <h:form enctype="multipart/form-data" id="miArchivo">
+                <h:inputFile style="display: none" value="#{cubetasView.archivoCsv}" id="cargaScv"  >
+                    <f:ajax render="tablaDatos" listener="#{cubetasView.cargaInicial}"/>
+                </h:inputFile>
+                <input type="reset" style="display: none" id="formReset" value="borrar"/>
+            </h:form>
 
-                                    <c:if test="#{cbt.fotoCollection.size() > 0}">
-                                        <c:forEach var="foto" items="#{cbt.fotoCollection}" varStatus="pos">
-                                            <c:if test="#{pos.index == 0}">
-                                                <h:graphicImage width="70" height="70"  value="/imagesCbt/#{foto.fotRuta}" />
-                                            </c:if>
-                                        </c:forEach>
-                                    </c:if>
-
-                                    <c:if test="#{cbt.fotoCollection.size() == 0}">
-                                        <h:graphicImage width="70" height="70"  value="/imagesCbt/default.jpg" />
-                                    </c:if>
-
-                                </td>
-                                <td>
-                                    <h5 class="font-16">#{cbt.cubTipo}</h5>
-                                </td>
-                                <td>#{cbt.cubDescripcion}</td>
-                                <td>#{cbt.cubValor}</td>
-                                <td>#{cbt.cunCantidad}</td>
-                                <td>
-                                    <div class="dropdown">
-                                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                                            <i class="dw dw-more"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+            <h:panelGroup id="tablaDatos">
+                <table class="table nowrap">
+                    <thead>
+                        <tr>
+                            <th class="table-plus datatable-nosort">Foto</th>
+                            <th>Tipo</th>
+                            <th>Descripcion</th>
+                            <th>Valor</th>
+                            <th>Cantidad</th>
+                            <th class="datatable-nosort">Acciones</th>
+                            <th>
+                                <button data-toggle="modal" data-target="#Medium-modal-create" class="btn btn-danger"> Crear </button>
+                                <button onclick="$('#miArchivo\\:cargaScv').click()" class="btn btn-primary"> .CSV </button>
+                            </th>
 
 
-                                            <h:commandButton value="fotos" class="dropdown-item" action="#{cubetasView.cargaTemporal(cbt)}" html5:data-toggle="modal" html5:data-target="#Medium-modal-photo">
-                                                <f:ajax render="carrusel"></f:ajax>
-                                            </h:commandButton>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <h:form >
+                            <c:forEach items="#{cubetasView.leerTodas()}" var="cbt">
+                                <tr>
+                                    <td class="table-plus">
 
-                                            <h:commandButton  value="editar" action="#{cubetasView.cargaTemporal(cbt)}" html5:data-toggle="modal" html5:data-target="#Medium-modal-update" class="dropdown-item">
-                                                <f:ajax  render=":datosupdate"></f:ajax>   
-                                            </h:commandButton>
-                                            <h:commandLink action="#{cubetasView.eliminarCubeta(cbt)}" class="dropdown-item">
-                                                <i class="dw dw-delete-3"></i> Eliminar
-                                            </h:commandLink>
+                                        <c:if test="#{cbt.fotoCollection.size() > 0}">
+                                            <c:forEach var="foto" items="#{cbt.fotoCollection}" varStatus="pos">
+                                                <c:if test="#{pos.index == 0}">
+                                                    <h:graphicImage width="70" height="70"  value="/imagesCbt/#{foto.fotRuta}" />
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
 
+                                        <c:if test="#{cbt.fotoCollection.size() == 0}">
+                                            <h:graphicImage width="70" height="70"  value="/imagesCbt/default.jpg" />
+                                        </c:if>
+
+                                    </td>
+                                    <td>
+                                        <h5 class="font-16">#{cbt.cubTipo}</h5>
+                                    </td>
+                                    <td>#{cbt.cubDescripcion}</td>
+                                    <td>#{cbt.cubValor}</td>
+                                    <td>#{cbt.cunCantidad}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                                <i class="dw dw-more"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+
+
+                                                <h:commandButton value="fotos" class="dropdown-item" action="#{cubetasView.cargaTemporal(cbt)}" html5:data-toggle="modal" html5:data-target="#Medium-modal-photo">
+                                                    <f:ajax render="carrusel"></f:ajax>
+                                                </h:commandButton>
+
+                                                <h:commandButton  value="editar" action="#{cubetasView.cargaTemporal(cbt)}" html5:data-toggle="modal" html5:data-target="#Medium-modal-update" class="dropdown-item">
+                                                    <f:ajax  render="datosupdate"></f:ajax>   
+                                                </h:commandButton>
+                                                <h:commandLink action="#{cubetasView.eliminarCubeta(cbt)}" class="dropdown-item">
+                                                    <i class="dw dw-delete-3"></i> Eliminar
+                                                </h:commandLink>
+
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
 
-                        </c:forEach>
-                    </h:form>
-                </tbody>
-            </table>
+                            </c:forEach>
+                        </h:form>
+                    </tbody>
+                </table>
+            </h:panelGroup>
         </div>
 
 
         <div class="modal fade" id="Medium-modal-update" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <h:form id="datosupdate">   
+                    <h:panelGroup id="datosupdate">
+                    <h:form >   
                         <div class="modal-header">
                             <h4 class="modal-title" id="myLargeModalLabelData">#{cubetasView.cub_temporal.cubTipo}</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -139,6 +154,7 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         </div>
                     </h:form>
+                        </h:panelGroup>
                 </div>
             </div>
         </div>

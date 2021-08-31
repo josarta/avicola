@@ -5,11 +5,13 @@
  */
 package edu.sena.controlador.avicola;
 
+import com.opencsv.CSVReader;
 import edu.sena.entity.avicola.Cubeta;
 import edu.sena.entity.avicola.Foto;
 import edu.sena.facade.avicola.CubetaFacadeLocal;
 import edu.sena.facade.avicola.FotoFacadeLocal;
 import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -41,11 +43,106 @@ public class CubetasView implements Serializable {
     private Cubeta cub_temporal = new Cubeta();
     private Part cargafoto;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+    private Part archivoCsv;
 
     /**
      * Creates a new instance of CubetasView
      */
     public CubetasView() {
+    }
+
+    public void cargaInicial() {
+        try {
+
+            if (archivoCsv != null) {
+                if (archivoCsv.getSize() > 900000) {
+                    PrimeFaces.current().executeScript("Swal.fire({"
+                            + "  title: 'Error!',"
+                            + "  text: 'No se puede cargar este archivo, pór su tamaño',"
+                            + "  icon: 'error',"
+                            + "  confirmButtonText: 'Por favor intente mas tarde'"
+                            + "})");
+                } else if (archivoCsv.getContentType().equalsIgnoreCase("application/vnd.ms-excel")) {
+
+                    File carpeta = new File("C:/Imgavicola/Archivos/Administrador");
+                    if (!carpeta.exists()) {
+                        carpeta.mkdirs();
+                    }
+                    try (InputStream is = archivoCsv.getInputStream()) {
+                        Calendar hoy = Calendar.getInstance();
+                        Files.copy(is, (new File(carpeta, archivoCsv.getSubmittedFileName())).toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                        try (CSVReader reader = new CSVReader(new FileReader("C:/Imgavicola/Archivos/Administrador/" + archivoCsv.getSubmittedFileName()))) {
+                            List<String[]> r = reader.readAll();
+                            for (String[] st : r) {
+                                Cubeta objc = cubetaFacadeLocal.validarExistencia(st[0]);
+                                if (objc != null) {
+                                    //tipo st[0]
+                                    //descripcion st[1]
+                                    //valor st[2]
+                                    //catidad st[3]
+                                    objc.setCubDescripcion(st[1]);
+                                    objc.setCubValor(Double.parseDouble(st[2]));
+                                    objc.setCunCantidad(Integer.parseInt(st[3]));
+                                    cubetaFacadeLocal.edit(objc);
+                                } else {
+                                    Cubeta newC = new Cubeta();
+                                    newC.setCubTipo(st[0]);
+                                    newC.setCubDescripcion(st[1]);
+                                    newC.setCubValor(Double.parseDouble(st[2]));
+                                    newC.setCunCantidad(Integer.parseInt(st[3]));
+                                    cubetaFacadeLocal.create(newC);
+                                }
+                            }
+                        }
+                        PrimeFaces.current().executeScript("Swal.fire({"
+                                + "  title: 'Imagen de perfil Actualizada !',"
+                                + "  text: 'Con Exito !!!',"
+                                + "  icon: 'success',"
+                                + "  confirmButtonText: 'Ok'"
+                                + "})");
+                        PrimeFaces.current().executeScript("document.getElementById('formReset').click()");
+
+                    } catch (Exception e) {
+                        PrimeFaces.current().executeScript("Swal.fire({"
+                                + "  title: 'Error!',"
+                                + "  text: 'No se puede realizar esta peticion',"
+                                + "  icon: 'error',"
+                                + "  confirmButtonText: 'Por favor intente mas tarde'"
+                                + "})");
+
+                    }
+
+                } else {
+                    PrimeFaces.current().executeScript("Swal.fire({"
+                            + "  title: 'Error!',"
+                            + "  text: 'Tipo de archivo no permitido, recuerde la extencion es "
+                            + ".csv',"
+                            + "  icon: 'error',"
+                            + "  confirmButtonText: 'Por favor intente mas tarde'"
+                            + "})");
+                }
+
+            } else {
+                PrimeFaces.current().executeScript("Swal.fire({"
+                        + "  title: 'Error!',"
+                        + "  text: 'No se puede realizar esta peticion',"
+                        + "  icon: 'error',"
+                        + "  confirmButtonText: 'Por favor intente mas tarde'"
+                        + "})");
+
+            }
+
+        } catch (Exception e) {
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Error!',"
+                    + "  text: 'No se puede realizar esta peticion',"
+                    + "  icon: 'error',"
+                    + "  confirmButtonText: 'Por favor intente mas tarde'"
+                    + "})");
+        }
+
+        PrimeFaces.current().executeScript("document.getElementById('formReset').click()");
     }
 
     public List<Cubeta> leerTodas() {
@@ -203,7 +300,7 @@ public class CubetasView implements Serializable {
         try {
             cubetaFacadeLocal.removerFotoCubeta(fotoIn.getFotFotoid(), cub_temporal.getCubCubetaid());
             fotoFacadeLocal.remove(fotoIn);
-              cub_temporal = cubetaFacadeLocal.buscarCubetaId(cub_temporal.getCubCubetaid());
+            cub_temporal = cubetaFacadeLocal.buscarCubetaId(cub_temporal.getCubCubetaid());
 
             PrimeFaces.current().executeScript("Swal.fire({"
                     + "  title: 'Foto removida !',"
@@ -244,6 +341,14 @@ public class CubetasView implements Serializable {
 
     public void setCargafoto(Part cargafoto) {
         this.cargafoto = cargafoto;
+    }
+
+    public Part getArchivoCsv() {
+        return archivoCsv;
+    }
+
+    public void setArchivoCsv(Part archivoCsv) {
+        this.archivoCsv = archivoCsv;
     }
 
 }

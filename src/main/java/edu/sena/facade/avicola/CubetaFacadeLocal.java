@@ -39,5 +39,7 @@ public interface CubetaFacadeLocal {
     public boolean cargaFotoCubeta(int fotoIn, int cubetaIn);
 
     public boolean removerFotoCubeta(int fotoIn, int cubetaIn);
+
+    public Cubeta validarExistencia(String tipo);
     
 }

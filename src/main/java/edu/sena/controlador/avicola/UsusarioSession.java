@@ -5,17 +5,20 @@
  */
 package edu.sena.controlador.avicola;
 
+import com.opencsv.CSVReader;
 import edu.sena.entity.avicola.Rol;
 import edu.sena.entity.avicola.Usuario;
 import edu.sena.facade.avicola.RolFacadeLocal;
 import edu.sena.facade.avicola.UsuarioFacadeLocal;
 import edu.sena.utilidad.avicola.Mail;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
@@ -50,6 +53,7 @@ public class UsusarioSession implements Serializable {
     private Part mifoto;
     private List<Rol> todosLosRoles = new ArrayList<>();
     private List<Rol> rolesSinAsignar = new ArrayList<>();
+    private Part archivoCsv;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
@@ -62,6 +66,113 @@ public class UsusarioSession implements Serializable {
     @PostConstruct
     public void cargaInicial() {
         todosLosRoles.addAll(rolFacadeLocal.findAll());
+    }
+
+    public void cargaInicialUsuarios() {
+        try {
+
+            if (archivoCsv != null) {
+                if (archivoCsv.getSize() > 900000) {
+                    PrimeFaces.current().executeScript("Swal.fire({"
+                            + "  title: 'Error!',"
+                            + "  text: 'No se puede cargar este archivo, pór su tamaño',"
+                            + "  icon: 'error',"
+                            + "  confirmButtonText: 'Por favor intente mas tarde'"
+                            + "})");
+                } else if (archivoCsv.getContentType().equalsIgnoreCase("application/vnd.ms-excel")) {
+
+                    File carpeta = new File("C:/Imgavicola/Archivos/Administrador");
+                    if (!carpeta.exists()) {
+                        carpeta.mkdirs();
+                    }
+                    try (InputStream is = archivoCsv.getInputStream()) {
+                        Calendar hoy = Calendar.getInstance();
+                        Files.copy(is, (new File(carpeta, archivoCsv.getSubmittedFileName())).toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                        try (CSVReader reader = new CSVReader(new FileReader("C:/Imgavicola/Archivos/Administrador/" + archivoCsv.getSubmittedFileName()))) {
+                            List<String[]> r = reader.readAll();
+                            for (String[] st : r) {
+                                Usuario objU = usuarioFacadeLocal.validarExistencia(st[4]);
+                                if (objU != null) {
+                                    //cedula st[0]
+                                    //numero st[1]
+                                    //nombres st[2]
+                                    //apellidos st[3]
+                                    //correo st[4]
+                                    //clave st[5]
+                                    //estado st[6]
+                                    //foto st[7]
+
+                                    objU.setUsuTipodocumento(st[0]);
+                                    objU.setUsuNumerodocumento(BigInteger.valueOf(Long.parseLong(st[1])));
+                                    objU.setUsuNombres(st[2]);
+                                    objU.setUsuApellidos(st[3]);
+                                    objU.setUsuClave(st[5]);
+                                    objU.setUsuEstado(Short.parseShort(st[6]));
+                                    objU.setUsuFoto(st[7]);
+                                    usuarioFacadeLocal.edit(objU);
+                                } else {
+                                    Usuario newC = new Usuario();
+                                    newC.setUsuTipodocumento(st[0]);
+                                    newC.setUsuNumerodocumento(BigInteger.valueOf(Long.parseLong(st[1])));
+                                    newC.setUsuNombres(st[2]);
+                                    newC.setUsuApellidos(st[3]);
+                                    newC.setUsuCorreoelectronico(st[4]);
+                                    newC.setUsuClave(st[5]);
+                                    newC.setUsuEstado(Short.parseShort(st[6]));
+                                    newC.setUsuFoto(st[7]);
+                                    usuarioFacadeLocal.registroUsusario(newC);
+                                }
+                            }
+                        }
+                        PrimeFaces.current().executeScript("Swal.fire({"
+                                + "  title: 'Imagen de perfil Actualizada !',"
+                                + "  text: 'Con Exito !!!',"
+                                + "  icon: 'success',"
+                                + "  confirmButtonText: 'Ok'"
+                                + "})");
+                        PrimeFaces.current().executeScript("document.getElementById('formReset').click()");
+
+                    } catch (Exception e) {
+                        PrimeFaces.current().executeScript("Swal.fire({"
+                                + "  title: 'Error!',"
+                                + "  text: 'No se puede realizar esta peticion',"
+                                + "  icon: 'error',"
+                                + "  confirmButtonText: 'Por favor intente mas tarde'"
+                                + "})");
+
+                    }
+
+                } else {
+                    PrimeFaces.current().executeScript("Swal.fire({"
+                            + "  title: 'Error!',"
+                            + "  text: 'Tipo de archivo no permitido, recuerde la extencion es "
+                            + ".csv',"
+                            + "  icon: 'error',"
+                            + "  confirmButtonText: 'Por favor intente mas tarde'"
+                            + "})");
+                }
+
+            } else {
+                PrimeFaces.current().executeScript("Swal.fire({"
+                        + "  title: 'Error!',"
+                        + "  text: 'No se puede realizar esta peticion',"
+                        + "  icon: 'error',"
+                        + "  confirmButtonText: 'Por favor intente mas tarde'"
+                        + "})");
+
+            }
+
+        } catch (Exception e) {
+            PrimeFaces.current().executeScript("Swal.fire({"
+                    + "  title: 'Error!',"
+                    + "  text: 'No se puede realizar esta peticion',"
+                    + "  icon: 'error',"
+                    + "  confirmButtonText: 'Por favor intente mas tarde'"
+                    + "})");
+        }
+
+        PrimeFaces.current().executeScript("document.getElementById('formReset').click()");
     }
 
     public void iniciarSesion() {
@@ -423,6 +534,14 @@ public class UsusarioSession implements Serializable {
 
     public void setRolesSinAsignar(List<Rol> rolesSinAsignar) {
         this.rolesSinAsignar = rolesSinAsignar;
+    }
+
+    public Part getArchivoCsv() {
+        return archivoCsv;
+    }
+
+    public void setArchivoCsv(Part archivoCsv) {
+        this.archivoCsv = archivoCsv;
     }
 
 }
