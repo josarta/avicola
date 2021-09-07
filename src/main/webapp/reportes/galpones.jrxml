@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2ad24eb6-748e-4f0d-a88d-8962e7e04781">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT gal_galponid as 'Serial' , gal_cantidad as 'Cantidad' , gal_ubicacion as 'Ubicacion' FROM dbs_avicola.tbl_galpon;]]>
+	</queryString>
+	<field name="Serial" class="java.lang.Integer"/>
+	<field name="Cantidad" class="java.lang.Integer"/>
+	<field name="Ubicacion" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<image>
+				<reportElement x="275" y="0" width="300" height="64" uuid="640368d5-0ddb-40f7-b3f6-56602a707097"/>
+				<imageExpression><![CDATA["leaf_banner_green.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="263" height="33" uuid="c9c4f659-0902-446a-bfe5-38a6e2dfd0d3"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Avicola]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="100" y="46" width="174" height="22" uuid="37a93c3a-72d6-4288-ae39-ee49de6959e1"/>
+				<text><![CDATA[Galpones y ubicacion]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="9bf40d00-85b1-4c24-a45e-eaa5b33b43e4"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="0" y="19" width="141" height="15" uuid="327a3f9a-6291-4748-9e23-38140b702677"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Serial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="141" y="20" width="185" height="15" uuid="e08f4881-ffd2-4f31-b530-587dfae4e727"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="326" y="19" width="229" height="15" uuid="05f9eca1-895a-4453-b5c2-a5759b5d4486"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Ubicacion]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="5e1caa84-0418-42b0-a8df-b3221602ca77"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="141" height="15" uuid="d76c39e0-6fe0-446a-a9ec-f8e74d641043"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{Serial}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="141" y="1" width="185" height="15" uuid="5484f078-3ff4-438d-97b0-2fc836176730"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{Cantidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="326" y="0" width="229" height="15" uuid="1a81c84d-85dc-469a-9469-f8f557373fd1"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{Ubicacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="37fab481-ea69-4b36-ab8b-2da39c46a3c4"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="6c53babe-102a-4d82-a822-da0704891b27"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="105c1468-94f2-4e94-8a82-c899e903b762"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="c7361348-e08c-44bb-b4bd-703a65f5bb3c"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

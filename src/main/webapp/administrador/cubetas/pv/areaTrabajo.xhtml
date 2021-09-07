@@ -49,9 +49,10 @@
                             <th>
                                 <button data-toggle="modal" data-target="#Medium-modal-create" class="btn btn-danger"> Crear </button>
                                 <button onclick="$('#miArchivo\\:cargaScv').click()" class="btn btn-primary"> .CSV </button>
+                                <h:form>
+                                     <h:commandButton action="#{cubetasView.descargaReporte()}" class="btn btn-success" value=".Pdf"></h:commandButton>
+                                </h:form>
                             </th>
-
-
                         </tr>
                     </thead>
                     <tbody>

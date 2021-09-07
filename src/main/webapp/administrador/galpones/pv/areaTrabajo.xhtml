@@ -46,10 +46,12 @@
                             <th>Ubicacion</th>
                             <th class="datatable-nosort">Acciones</th>
                             <th>  
-                                <button data-toggle="modal" data-target="#Medium-modal-create" class="btn btn-danger"> Crear </button>
-
-                                <button onclick="$('#miArchivo\\:cargaScv').click()" class="btn btn-primary"> .CSV </button>
-
+                                <h:form>
+                                    <button data-toggle="modal" data-target="#Medium-modal-create" class="btn btn-danger"> Crear </button>
+                                    <button onclick="$('#miArchivo\\:cargaScv').click()" class="btn btn-primary"> .CSV </button>                               
+                                    <h:commandButton action="#{galponView.descargaReporte()}" class="btn btn-success" value=".pdf"></h:commandButton>
+                                    <h:commandButton action="#{galponView.descargaReporteXlsx()}" class="btn btn-primary" value=".xlsx"></h:commandButton>
+                                </h:form>
                             </th>
                         </tr>
                     </thead>

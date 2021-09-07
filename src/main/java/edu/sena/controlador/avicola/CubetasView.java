@@ -12,17 +12,32 @@ import edu.sena.facade.avicola.CubetaFacadeLocal;
 import edu.sena.facade.avicola.FotoFacadeLocal;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import javax.sql.DataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.primefaces.PrimeFaces;
 import org.primefaces.shaded.commons.io.FilenameUtils;
 
@@ -38,6 +53,8 @@ public class CubetasView implements Serializable {
     CubetaFacadeLocal cubetaFacadeLocal;
     @EJB
     FotoFacadeLocal fotoFacadeLocal;
+    @Resource(lookup = "java:app/dbs_avicola")
+    DataSource dataSource;
 
     private Cubeta cub_nueva = new Cubeta();
     private Cubeta cub_temporal = new Cubeta();
@@ -143,6 +160,28 @@ public class CubetasView implements Serializable {
         }
 
         PrimeFaces.current().executeScript("document.getElementById('formReset').click()");
+    }
+
+    public void descargaReporte() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext context = facesContext.getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) context.getRequest();
+        HttpServletResponse response = (HttpServletResponse) context.getResponse();
+        response.setContentType("application/pdf");
+        try {
+            File jasper = new File(context.getRealPath("/reportes/cubetas.jasper"));
+            JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), new HashMap(), dataSource.getConnection());
+            HttpServletResponse hsr = (HttpServletResponse) context.getResponse();
+            hsr.addHeader("Content-disposition", "attachment; filename=Lista Cubetas.pdf");
+            OutputStream os = hsr.getOutputStream();
+            JasperExportManager.exportReportToPdfStream(jp, os);
+            os.flush();
+            os.close();
+            facesContext.responseComplete();
+        } catch (IOException | SQLException | JRException e) {
+            System.out.println("CubetasView.descargaReporte() " + e.getMessage());
+
+        }
     }
 
     public List<Cubeta> leerTodas() {

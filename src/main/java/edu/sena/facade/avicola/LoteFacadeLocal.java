@@ -29,5 +29,9 @@ public interface LoteFacadeLocal {
     List<Lote> findRange(int[] range);
 
     int count();
+
+    public boolean addLote(String cantidad, String color, int fk_huevo, int fk_galpon, int fk_produccion);
+
+    public List<Lote> todosLotes();
     
 }

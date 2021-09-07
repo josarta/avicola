@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e195731e-e8d6-49c4-b52a-ab3a37fcd688">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cedula" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT usu_tipodocumento as 'Tipo Documento' , usu_numerodocumento as 'Numero Documento' , usu_nombres as 'Nombres', usu_apellidos as 'Apellidos' ,usu_correoelectronico  as 'Correo', usu_estado as 'Estado'
+FROM tbl_usuario WHERE usu_numerodocumento like $P{cedula};]]>
+	</queryString>
+	<field name="Tipo Documento" class="java.lang.String"/>
+	<field name="Numero Documento" class="java.lang.Long"/>
+	<field name="Nombres" class="java.lang.String"/>
+	<field name="Apellidos" class="java.lang.String"/>
+	<field name="Correo" class="java.lang.String"/>
+	<field name="Estado" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="555" splitType="Stretch">
+			<image>
+				<reportElement x="39" y="0" width="1197" height="555" uuid="5d6f1c8e-d8a6-4ccd-857e-f40a97020ca2"/>
+				<imageExpression><![CDATA["C:\\Users\\Josarta\\Documents\\NetBeansProjects\\avicola\\src\\main\\webapp\\reportes\\diploma.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="205" y="292" width="189" height="31" uuid="021e3b63-092c-4326-adda-09844d782f54"/>
+				<textElement>
+					<font fontName="Arial" size="24"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nombres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="394" y="292" width="212" height="31" uuid="8e3a9510-7412-4324-9394-4c58e91414d9"/>
+				<textElement>
+					<font fontName="Arial" size="24"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Apellidos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="133" y="419" width="158" height="31" uuid="dae721a3-6931-4e68-9f28-a2436543556a"/>
+				<textElement>
+					<font size="24"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

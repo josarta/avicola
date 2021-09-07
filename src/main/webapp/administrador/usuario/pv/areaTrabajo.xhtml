@@ -32,7 +32,7 @@
 
             <h:form enctype="multipart/form-data" id="miArchivo">
                 <h:inputFile style="display: none" value="#{usuarioSession.archivoCsv}" id="cargaScv"  >
-                    <f:ajax render="tablaDatos" listener="#{usuarioSession.cargaInicialUsuarios()}"/>
+                    <f:ajax render="tablaDatos" listener="#{usuarioSession.cargaInicialLotes()}"/>
                 </h:inputFile>
                 <input type="reset" style="display: none" id="formReset" value="borrar"/>
             </h:form>
@@ -50,9 +50,13 @@
                             <th>Estado</th>
                             <th>Perfiles</th>
                             <th class="datatable-nosort">Acciones</th>
-                            <th>
-                                <button data-toggle="modal" data-target="#Medium-modal-create" class="btn btn-danger"> Crear </button>
-                                <button onclick="$('#miArchivo\\:cargaScv').click()" class="btn btn-primary"> .CSV </button>
+                            <th> <h:form>
+                                    <button data-toggle="modal" data-target="#Medium-modal-create" class="btn btn-danger"> Crear </button>
+                                    <button onclick="$('#miArchivo\\:cargaScv').click()" class="btn btn-primary"> .CSV </button>
+                                    <h:commandButton action="#{usuarioSession.descargaReporte()}" class="btn btn-success" value=".pdf"></h:commandButton>
+                                    <h:commandButton action="#{usuarioSession.descargaReporteXlsx()}" class="btn btn-dark" value=".xlsx"></h:commandButton>
+                                    <h:commandButton action="#{usuarioSession.descargaReporteDoc()}" class="btn btn-default" value=".docx"></h:commandButton>
+                                </h:form>
                             </th>
                         </tr>
                     </thead>
@@ -82,16 +86,18 @@
                                             <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
                                                 <i class="dw dw-more"></i>
                                             </a>
-                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">+
-
-
+                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
                                                 <h:commandButton  value="editar" action="#{usuarioSession.cargaTemporal(usu)}" html5:data-toggle="modal" html5:data-target="#Medium-modal-update" class="dropdown-item">
-
                                                     <f:ajax  render=":datosupdate"></f:ajax>   
                                                 </h:commandButton>
                                                 <h:commandLink action="#{usuarioSession.cambiarEstado(usu)}" class="dropdown-item">
                                                     <i class="dw dw-delete-3"></i> Inactivar/Activar
                                                 </h:commandLink>
+                                                
+                                                <h:commandLink action="#{usuarioSession.descargaReporteDiploma(usu.usuNumerodocumento)}" class="dropdown-item">
+                                                    <i class="dw dw-balance"></i> .pdf
+                                                </h:commandLink>
+
 
                                             </div>
                                         </div>
@@ -106,6 +112,56 @@
 
                     </tbody>
                 </table>
+
+
+
+                <f:view>
+
+
+                    <h:form>
+                        <h1><h:outputText value="List"/></h1>
+                        <h:dataTable value="#{usuarioSession.todosLotes()}" var="item">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="LotLoteid"/>
+                                </f:facet>
+                                <h:outputText value="#{item.lotLoteid}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="LotCantidad"/>
+                                </f:facet>
+                                <h:outputText value="#{item.lotCantidad}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="LotColor"/>
+                                </f:facet>
+                                <h:outputText value="#{item.lotColor}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="FkGalpon"/>
+                                </f:facet>
+                                <h:outputText value="#{item.fkGalpon.galUbicacion}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="FkHuevo"/>
+                                </f:facet>
+                                <h:outputText value="#{item.fkHuevo.hueClasificacion}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="FkProduccion"/>
+                                </f:facet>
+                                <h:outputText value="#{item.fkProduccion.proCantidadtotal}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </f:view>
+
+
 
             </h:panelGroup>
         </div>
